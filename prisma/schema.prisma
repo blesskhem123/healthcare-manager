@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  name          String
+  role          String         // PATIENT, DOCTOR, ADMIN
+  phone         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  doctorProfile DoctorProfile?
+  appointments  Appointment[]  @relation("PatientAppointments")
+}
+
+model DoctorProfile {
+  id               String         @id @default(uuid())
+  userId           String         @unique
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization   String
+  bio              String?
+  workingHoursStart String        @default("09:00")
+  workingHoursEnd   String        @default("17:00")
+  slotDurationMins Int            @default(30)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  leaves           DoctorLeave[]
+  appointments     Appointment[]  @relation("DoctorAppointments")
+}
+
+model DoctorLeave {
+  id             String        @id @default(uuid())
+  doctorId       String
+  doctorProfile  DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  leaveDate      String        // YYYY-MM-DD
+  reason         String?
+  createdAt      DateTime      @default(now())
+
+  @@unique([doctorId, leaveDate])
+}
+
+model SlotHold {
+  id              String   @id @default(uuid())
+  doctorId        String
+  appointmentDate String   // YYYY-MM-DD
+  startTime       String   // HH:MM
+  patientId       String
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+
+  @@unique([doctorId, appointmentDate, startTime])
+}
+
+model Appointment {
+  id              String             @id @default(uuid())
+  patientId       String
+  patient         User               @relation("PatientAppointments", fields: [patientId], references: [id])
+  doctorId        String
+  doctor          DoctorProfile      @relation("DoctorAppointments", fields: [doctorId], references: [id])
+  appointmentDate String             // YYYY-MM-DD
+  startTime       String             // HH:MM
+  endTime         String             // HH:MM
+  status          String             // BOOKED, COMPLETED, CANCELLED_PATIENT, CANCELLED_LEAVE
+  symptoms        String
+  googleEventId   String?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  preVisitSummary PreVisitSummary?
+  postVisitSummary PostVisitSummary?
+}
+
+model PreVisitSummary {
+  id                 String      @id @default(uuid())
+  appointmentId      String      @unique
+  appointment        Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  urgency            String      // Low, Medium, High
+  chiefComplaint     String
+  suggestedQuestions String      // JSON string array of 3 questions
+  rawLlmOutput       String?
+  createdAt          DateTime    @default(now())
+}
+
+model PostVisitSummary {
+  id                 String      @id @default(uuid())
+  appointmentId      String      @unique
+  appointment        Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  doctorNotes        String
+  patientSummary     String
+  medicationSchedule String      // JSON string array of objects { name, dosage, frequency }
+  followUpSteps      String
+  createdAt          DateTime    @default(now())
+}
+
+model MedicationReminder {
+  id             String    @id @default(uuid())
+  patientId      String
+  appointmentId String
+  medicationName String
+  dosage         String
+  frequency      String    // Morning, Evening, Twice Daily, etc.
+  startDate      String    // YYYY-MM-DD
+  endDate        String    // YYYY-MM-DD
+  lastSentAt     DateTime?
+  status         String    @default("ACTIVE") // ACTIVE, COMPLETED
+  createdAt      DateTime  @default(now())
+}
+
+model NotificationLog {
+  id           String   @id @default(uuid())
+  type         String   // EMAIL, CALENDAR
+  recipient    String
+  subject      String
+  content      String
+  status       String   // SENT, FAILED, PENDING_RETRY
+  retryCount   Int      @default(0)
+  errorDetails String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

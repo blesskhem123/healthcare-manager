@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Production builds
+dist/
+
+# Local Environment Variables
+.env
+
+# SQLite Database
+dev.db
+dev.db-journal
+*.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
