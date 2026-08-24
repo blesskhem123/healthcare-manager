@@ -4,26 +4,19 @@ A production-ready healthcare appointment management platform built with React 1
 
 ---
 
-## 📋 Table of Contents
-- [Deliverables Overview](#-deliverables-overview)
-- [Key Features](#-key-features)
-- [Setup & Local Installation Guide](#-setup--local-installation-guide)
-- [Hosting & Deployment Guide (Render / Railway / Vercel)](#-hosting--deployment-guide-render--railway--vercel)
-- [Environment Variables (.env.example)](#-environment-variables-envexample)
-- [Complete API Documentation](#-complete-api-documentation)
-- [Database Schema (Prisma)](#-database-schema-prisma)
-- [LLM Usage & Guidance Prompts](#-llm-usage--guidance-prompts)
-- [Google Calendar Setup Guide](#-google-calendar-setup-guide)
-- [System Verification & Zip Deliverable](#-system-verification--zip-deliverable)
+## 🔗 Live Application & GitHub Repository
+
+- **🌐 Live Hosted Application URL:** [https://healthcare-manager-5y9w.onrender.com](https://healthcare-manager-5y9w.onrender.com)
+- **📦 GitHub Source Code Repository:** [https://github.com/blesskhem123/healthcare-manager](https://github.com/blesskhem123/healthcare-manager)
 
 ---
 
-## 📦 Deliverables Overview
+## 📋 Deliverables Overview
 
-1. **Zip File with Complete Source Code:** `healthcare-manager.zip` (Generated via `npm run create-zip`).
+1. **Zip File with Complete Source Code:** `healthcare-manager.zip` (Generated via `npm run create-zip` and tracked in root repository).
 2. **README Documentation:** Includes setup guide, `.env.example`, full API documentation, DB schema explanation, LLM prompts, and Google Calendar integration steps.
-3. **Deployment Instructions & Configs:** Ready for zero-cost deployment on Render / Railway / Vercel.
-4. **System Design Write-Up:** `system_design.md` (Max 800 words covering double-booking prevention, doctor leave conflict handling, 5-minute slot hold, and notification retries).
+3. **Hosted Application URL:** [https://healthcare-manager-5y9w.onrender.com](https://healthcare-manager-5y9w.onrender.com) (Deployed on Render).
+4. **System Design Write-Up:** [`system_design.md`](./system_design.md) (Max 800 words covering double-booking prevention, doctor leave conflict handling, 5-minute slot hold, and notification retries).
 
 ---
 
@@ -64,6 +57,7 @@ A production-ready healthcare appointment management platform built with React 1
 
 1. **Clone / Extract Source Code:**
    ```bash
+   git clone https://github.com/blesskhem123/healthcare-manager.git
    cd healthcare-manager
    ```
 
@@ -102,25 +96,6 @@ Password for all pre-seeded demo accounts: `password123`
 | **Patient** | `john.doe@example.com` | Search doctors, hold slot, book appointment, view AI summaries & medication schedule |
 | **Doctor** | `sarah.jenkins@clinic.com` | View patient AI summaries, submit post-visit notes & prescription, set leave |
 | **Admin** | `admin@clinic.com` | Manage doctor profiles, resolve leave conflicts, system audit log |
-
----
-
-## 🌐 Hosting & Deployment Guide (Render / Railway / Vercel)
-
-### Option A: Deploy on Render (Recommended Free Hosting)
-1. Push project to a GitHub repository.
-2. Go to [Render Dashboard](https://dashboard.render.com/) -> New **Web Service**.
-3. Connect your GitHub repo.
-4. Set settings:
-   - **Build Command:** `npm install && npm run build`
-   - **Start Command:** `npm start`
-5. Add Environment Variables (`DATABASE_URL`, `JWT_SECRET`, `GEMINI_API_KEY`, etc.).
-6. Click **Deploy**. Render will host the single-repo Express server and build static Vite frontend automatically.
-
-### Option B: Deploy on Railway
-1. Go to [Railway.app](https://railway.app/).
-2. Click **New Project** -> Deploy from GitHub repo.
-3. Railway automatically detects `npm run build` and `npm start`.
 
 ---
 
@@ -267,7 +242,6 @@ Notes: <notes>
 
 To run automated verification test suite:
 ```bash
-npm run build:server
 node tests/verify_system.js
 ```
 
